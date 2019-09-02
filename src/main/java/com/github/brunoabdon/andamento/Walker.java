@@ -3,6 +3,8 @@ package com.github.brunoabdon.andamento;
 import static java.util.Arrays.asList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static org.hipparchus.fraction.Fraction.ONE_HALF;
+import static org.hipparchus.fraction.Fraction.ONE_THIRD;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,7 @@ import com.github.brunoabdon.andamento.Objetivo.SubObjetivo;
 public class Walker {
 
     private static final String PATH_REGEXP =  
-            "^(\\/)\\/*|(\\/?)\\/*(([a-z]+)\\/*((\\/*[a-z]+\\/*)*))$";
+        "^(\\/)\\/*|(\\/?)\\/*(([a-z]+)\\/*((\\/*[a-z]+\\/*)*))$";
 
     private static final Pattern PATH_PATTERN = Pattern.compile(PATH_REGEXP);
 
@@ -87,7 +89,7 @@ public class Walker {
         this.setaCurrent(root);
     }
 
-	public static void main(String[] args) {
+	public static void main3(String[] args) {
 
 		final List<String> paths = 
 	        asList(
@@ -130,4 +132,25 @@ public class Walker {
 		}
     }
 	
+    
+    public static void main(String[] args) {
+        final Objetivo home = new Objetivo("home");
+        home.dividir(ONE_HALF,ONE_HALF);
+        final List<SubObjetivo> lsHome = home.getSubObjetivos();
+        final Objetivo bruno = lsHome.get(0).getObjetivo();
+        bruno.setNome("bruno");
+        bruno.dividir(ONE_THIRD,ONE_THIRD,ONE_THIRD);
+        bruno.getSubObjetivos().get(0).getObjetivo().setNome("pasta");
+        bruno.getSubObjetivos().get(1).getObjetivo().setNome("folder");
+        bruno.getSubObjetivos().get(2).getObjetivo().setNome("ficher");
+        
+        lsHome.get(1).getObjetivo().setNome("guest");
+        
+        
+        final Walker w = new Walker(home);
+        
+        w.cd("/home/bruno/folder");
+        
+    }
+    
 }
