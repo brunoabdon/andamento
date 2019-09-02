@@ -167,10 +167,10 @@ public class Objetivo {
      * 1.
      */
     boolean ehParticao(final Fraction... ratios) {
-        return
-            Stream
-                .of(ratios)
-                .collect(() -> ZERO, Fraction::add, Fraction::add)
-                .compareTo(ONE) == 0;
+        return somatorio(ratios).compareTo(ONE) == 0;
+    }
+
+    private static Fraction somatorio(final Fraction... ratios) {
+        return Stream.of(ratios).reduce(ZERO, Fraction::add);
     }
 }
