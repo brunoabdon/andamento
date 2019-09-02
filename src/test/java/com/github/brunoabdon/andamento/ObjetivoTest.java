@@ -23,12 +23,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 class ObjetivoTest {
 
     @NullSource
-    @ValueSource(strings = {"parte1","parte2","parte3","boo aaa aa"})
+    @ValueSource(strings = {"   ","","\t\t  "})
     @ParameterizedTest(name = "Deve dar NPE se nome for \"{0}\"")
     @DisplayName("Deve dar NPE se nome for null ou blank,  no construtor")
     void testNPENullName(final String nome) {
         //acao 
-        final Executable acao = () -> new Objetivo(null);
+        final Executable acao = () -> new Objetivo(nome);
         
         //verificacao
         assertThrows(IllegalArgumentException.class, acao);
