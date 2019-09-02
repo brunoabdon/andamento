@@ -1,8 +1,10 @@
 package com.github.brunoabdon.andamento;
 
+import static java.util.Arrays.asList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -12,28 +14,35 @@ import com.github.brunoabdon.andamento.Objetivo.SubObjetivo;
 
 public class Walker {
 
-	private static final String PATH_REGEXP = 
-		"^(\\/?)([a-zA-Z][a-zA-Z0-9]*)((\\/([a-zA-Z][a-zA-Z0-9]*))*(\\/)?)$";
+    private static final String PATH_REGEXP =  
+            "^(\\/)\\/*|(\\/?)\\/*(([a-z]+)\\/*((\\/*[a-z]+\\/*)*))$";
 
-	private static final Pattern PATH_PATTERN = 
-		Pattern.compile(PATH_REGEXP);
-	
+    private static final Pattern PATH_PATTERN = Pattern.compile(PATH_REGEXP);
+
 	private Objetivo current;
 	private Stack<Objetivo> lineage;
 	
 	private Map<String,Objetivo> filhos;
 	
 	public Walker(final Objetivo root) {
-		this.current = root;
-		this.filhos = 
-			root
+		this.lineage = new Stack<>();
+		this.setaCurrent(root);
+	}
+
+    public void setaCurrent(final Objetivo objetivo) {
+        this.current = objetivo;
+        this.filhos = 
+			objetivo
 				.getSubObjetivos()
 				.stream()
 				.map(SubObjetivo::getObjetivo)
 				.collect(toMap(Objetivo::getNome, identity()));
-	}
+		this.lineage.clear();
+		this.lineage.push(this.current);
+    }
 	
 	public void cd(final String path) {
+	    
 		if (".".equals(path)) return;
 		
 		if("..".equals(path)){
@@ -46,39 +55,79 @@ public class Walker {
 				throw new IllegalArgumentException("O que é " + path + "?");
 			}
 			
-			final String nome = matcher.group(2);
-			final Objetivo filho = filhos.get(nome);
-			
-			if(filho == null) {
-				throw new IllegalArgumentException(
-					"'" + nome + "'" + " não existe"
-				);
+			if(matcher.group(1) != null) {
+			    // cd /
+			    cdRoot();
+			} else {
+			    if(!matcher.group(2).isEmpty()) {
+			        cdRoot();
+			    }
+	            final String nome = matcher.group(4);
+	            final Objetivo filho = filhos.get(nome);
+
+	            if(filho == null) {
+	                throw new IllegalArgumentException(
+	                    "'" + nome + "'" + " não existe"
+	                );
+	            }
+	            
+	            setaCurrent(filho);
+	            
+	            final String resto = matcher.group(5);
+	            if(!resto.isEmpty()) {
+	                cd(resto);
+	            }
+	                
 			}
-			final String restoPath = matcher.group(3);
-			if(!"/".equals(restoPath)) {
-				
-			}
-			this.lineage.add(this.current);
-			this.current = filho;
 		}
 	}
 
-	
+    public void cdRoot() {
+        final Objetivo root = this.lineage.firstElement();
+        this.setaCurrent(root);
+    }
+
 	public static void main(String[] args) {
 
-		final String path = "/home/aaa/aa";
+		final List<String> paths = 
+	        asList(
+	            "",
+                "/",
+                "/home",
+                "/home/",
+                "home",
+                "/home/bruno",
+                "/home/bruno/",
+                "///",
+                "////home",
+                "///home/",
+                "home",
+                "///home/bruno",
+                "/home////bruno/",
+                "////home/bruno/pasta",
+                "/home/bruno/pasta/pd",
+                "home/bruno/pasta/pd"
+            );
 		
-		final Matcher matcher = PATH_PATTERN.matcher(path);
-		if(!matcher.matches()) {
-			throw new IllegalArgumentException("O que é " + path + "?");
-		}
 		
-		for (int i = 0; i <= matcher.groupCount(); i++) {
-			final String nome = matcher.group(i);
-			System.out.println(i + " - " + nome);
-			
-		}
+		paths.forEach(Walker::tenta);
+		
 		
 	}
+
+    public static void tenta(final String path) {
+        final Matcher matcher = PATH_PATTERN.matcher(path);
+		if(!matcher.matches()) {
+			System.out.println(path + ": Não deu.");
+		} else {
+		    System.out.println(path +":");
+	        for (int i = 0; i <= matcher.groupCount(); i++) {
+	            final String nome = matcher.group(i);
+	            
+	            System.out.println("\t" + i + " - " + nome);
+	            
+	        }
+		}
+    }
 	
 }
