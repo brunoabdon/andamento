@@ -1,6 +1,6 @@
 package com.github.brunoabdon.andamento;
 
-import static org.apache.commons.math3.fraction.Fraction.ONE_FIFTH;
+import static org.hipparchus.fraction.Fraction.ONE_FIFTH;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.apache.commons.math3.fraction.Fraction;
+import org.hipparchus.fraction.Fraction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

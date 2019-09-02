@@ -1,13 +1,13 @@
 package com.github.brunoabdon.andamento;
 
-import static org.apache.commons.math3.fraction.Fraction.ONE;
-import static org.apache.commons.math3.fraction.Fraction.ZERO;
+import static org.hipparchus.fraction.Fraction.ONE;
+import static org.hipparchus.fraction.Fraction.ZERO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.apache.commons.math3.fraction.Fraction;
+import org.hipparchus.fraction.Fraction;
 
 public class Objetivo {
 
