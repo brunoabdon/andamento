@@ -1,5 +1,6 @@
 package com.github.brunoabdon.andamento;
 
+import static java.util.Collections.unmodifiableList;
 import static org.hipparchus.fraction.Fraction.ONE;
 import static org.hipparchus.fraction.Fraction.ZERO;
 
@@ -38,12 +39,15 @@ public class Objetivo {
 
     private String nome;
     private List<SubObjetivo> subObjetivos;
+    
+    private List<SubObjetivo> viewSubObjetivos;
 
     // TODO tornar construtores privados e criar um builder
     public Objetivo(final String nome) {
         validaNome(nome);
         this.nome = nome;
         this.subObjetivos = new ArrayList<>();
+        this.viewSubObjetivos = unmodifiableList(subObjetivos);
     }
 
     public void dividir(final Fraction ... ratios) {
@@ -158,7 +162,7 @@ public class Objetivo {
     }
     
     public List<SubObjetivo> getSubObjetivos() {
-        return subObjetivos;
+        return viewSubObjetivos;
     }
 
     /**
