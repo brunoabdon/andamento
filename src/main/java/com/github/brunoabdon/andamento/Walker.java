@@ -5,7 +5,9 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 import static org.hipparchus.fraction.Fraction.ONE_HALF;
+import static org.hipparchus.fraction.Fraction.ONE_QUARTER;
 import static org.hipparchus.fraction.Fraction.ONE_THIRD;
+import static org.hipparchus.fraction.Fraction.THREE_QUARTERS;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,11 @@ public class Walker {
 		this.setaCurrent(root);
 	}
 
-    public void setaCurrent(final Objetivo objetivo) {
+	public Objetivo getCurrent() {
+        return current;
+    }
+	
+    private void setaCurrent(final Objetivo objetivo) {
         this.current = objetivo;
         this.filhos = 
 			objetivo
@@ -43,12 +49,12 @@ public class Walker {
 		this.lineage.push(this.current);
     }
 	
-	public void cd(final String path) {
+	public Walker cd(final String path) {
 	    
-		if (".".equals(path)) return;
+		if (".".equals(path)) return this;
 		
 		if("..".equals(path)){
-		    if(lineage.size() == 1) return;
+		    if(lineage.size() == 1) return this;
 		    
 		    lineage.pop();
 			final Objetivo parent = lineage.pop();
@@ -85,12 +91,14 @@ public class Walker {
 	                
 			}
 		}
+		return this;
 	}
 
-    public void cdRoot() {
+    public Walker cdRoot() {
         final Objetivo root = this.lineage.firstElement();
         this.lineage.clear();
         this.setaCurrent(root);
+        return this;
     }
 
     public String pwd() {
@@ -155,8 +163,28 @@ public class Walker {
         
         lsHome.get(1).getObjetivo().setNome("guest");
         
-        
         final Walker w = new Walker(home);
+        
+        
+        bruno.dividir(bruno.getSubObjetivos().get(1), ONE_QUARTER,THREE_QUARTERS);
+        printa("\t", home);
+        
+        System.out.println("-------------------------");
+        bruno.engolir(
+            bruno.getSubObjetivos().get(3), bruno.getSubObjetivos().get(1)
+        );
+        bruno.engolir(
+            bruno.getSubObjetivos().get(2), bruno.getSubObjetivos().get(1)
+        );
+        
+        
+        
+        printa("\t", home);
+        
+        
+        
+        
+        
         
         w.cd("bruno/folder");
         System.out.println(w.pwd());
@@ -164,8 +192,22 @@ public class Walker {
         w.cd("pasta");
         System.out.println(w.pwd());
         
+        
+        
+        
+        
     }
     
+    
+    private static void printa(final String tab, final Objetivo objetivo) {
+        System.out.println(tab + objetivo);
+        for (final SubObjetivo s : objetivo.getSubObjetivos()) {
+            
+            System.out.println(tab + tab + s.getRatio());
+            printa(tab + tab,s.getObjetivo());
+        }
+
+    }
     
     
     
