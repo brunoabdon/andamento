@@ -39,7 +39,6 @@ public class Walker {
 				.stream()
 				.map(SubObjetivo::getObjetivo)
 				.collect(toMap(Objetivo::getNome, identity()));
-		this.lineage.clear();
 		this.lineage.push(this.current);
     }
 	
@@ -48,8 +47,11 @@ public class Walker {
 		if (".".equals(path)) return;
 		
 		if("..".equals(path)){
-			this.current = lineage.pop();
-			//TODO atualizar mapa de filhos
+		    if(lineage.size() == 1) return;
+		    
+		    lineage.pop();
+			final Objetivo parent = lineage.pop();
+            this.setaCurrent(parent);
 			
 		} else {
 			final Matcher matcher = PATH_PATTERN.matcher(path);
@@ -86,6 +88,7 @@ public class Walker {
 
     public void cdRoot() {
         final Objetivo root = this.lineage.firstElement();
+        this.lineage.clear();
         this.setaCurrent(root);
     }
 
