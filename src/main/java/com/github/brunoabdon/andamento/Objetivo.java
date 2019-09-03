@@ -189,4 +189,10 @@ public class Objetivo {
     private static Fraction somatorio(final Fraction... ratios) {
         return Stream.of(ratios).reduce(ZERO, Fraction::add);
     }
+    
+    @Override
+    public String toString() {
+        return this.getNome();
+    }
+    
 }
