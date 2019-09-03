@@ -151,7 +151,8 @@ public class Objetivo {
         this.nome = nome;
     }
 
-    public static void validaNome(final String nome) {
+    
+    private void validaNome(final String nome) {
         if(nome == null || nome.trim().isEmpty()) 
             throw new IllegalArgumentException("Nome nulo");
     }
