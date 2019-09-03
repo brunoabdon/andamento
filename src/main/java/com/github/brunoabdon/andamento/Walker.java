@@ -158,8 +158,15 @@ public class Walker {
         
         final Walker w = new Walker(home);
         
-        w.cd("/home/bruno/folder");
+        w.cd("bruno/folder");
+        System.out.println(w.pwd());
+        w.cd("..");
+        w.cd("pasta");
+        System.out.println(w.pwd());
         
     }
+    
+    
+    
     
 }
