@@ -2,6 +2,7 @@ package com.github.brunoabdon.andamento;
 
 import static java.util.Arrays.asList;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 import static org.hipparchus.fraction.Fraction.ONE_HALF;
 import static org.hipparchus.fraction.Fraction.ONE_THIRD;
@@ -92,6 +93,11 @@ public class Walker {
         this.setaCurrent(root);
     }
 
+    public String pwd() {
+        return 
+            this.lineage.stream().map(Objetivo::getNome).collect(joining("/"));
+    }
+    
 	public static void main3(String[] args) {
 
 		final List<String> paths = 
