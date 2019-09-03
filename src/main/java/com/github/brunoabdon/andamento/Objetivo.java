@@ -4,7 +4,7 @@ import static java.util.Collections.unmodifiableList;
 import static org.hipparchus.fraction.Fraction.ONE;
 import static org.hipparchus.fraction.Fraction.ZERO;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -46,7 +46,7 @@ public class Objetivo {
     public Objetivo(final String nome) {
         validaNome(nome);
         this.nome = nome;
-        this.subObjetivos = new ArrayList<>();
+        this.subObjetivos = new LinkedList<>();
         this.viewSubObjetivos = unmodifiableList(subObjetivos);
     }
 
@@ -55,7 +55,7 @@ public class Objetivo {
             throw new IllegalArgumentException("Já existe uma divisão.");
         }
         this.validaParticao(ratios);
-        this.divide(0, ratios);
+        this.criaSubObjetivos(0, 0, ratios);
     }
     
     /**
@@ -84,9 +84,15 @@ public class Objetivo {
         this.validaParticao(ratios);
 
         final Fraction ratioOriginal = subObjetivo.getRatio();
-        subObjetivo.setRatio(ratioOriginal.multiply(ratios[0]));
+        for (int i = 0; i < ratios.length; i++) {
+            ratios[i] = ratios[i].multiply(ratioOriginal);
+        }
 
-        this.divide(1, ratios);
+        subObjetivo.setRatio(ratios[0]);
+        
+        final int idx = subObjetivos.indexOf(subObjetivo) + 1;
+        
+        this.criaSubObjetivos(1, idx, ratios);
     }
 
     private void validaPaternidade(final SubObjetivo subObjetivo) {
@@ -137,13 +143,18 @@ public class Objetivo {
         }
     }
 
-    private void divide(final int skip, final Fraction... ratios) {
-        final String prefix = this.nome + "_"; 
-        Stream
-            .of(ratios)
-            .skip(skip)
-            .map(r -> new SubObjetivo(prefix + r, r))
-            .forEach(this.subObjetivos::add);
+    private void criaSubObjetivos(
+            final int skip, 
+            int idx,
+            final Fraction... ratios) {
+        final String prefixNome = this.nome + "_"; 
+        
+        for (int i = skip; i < ratios.length; i++) {
+            final Fraction r = ratios[i];
+            final String nome = prefixNome + r;
+            final SubObjetivo subObjetivo = new SubObjetivo(nome, r);
+            this.subObjetivos.add(idx++,subObjetivo);
+        }
     }
 
     public String getNome() {
